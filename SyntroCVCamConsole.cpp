@@ -18,11 +18,14 @@
 //
 
 #include <termios.h>
+#include <unistd.h>
+#include <signal.h>
 
 #include "SyntroCVCamConsole.h"
 #include "SyntroCVCam.h"
 #include "CameraClient.h"
 
+volatile bool SyntroCVCamConsole::sigIntReceived = false;
 
 SyntroCVCamConsole::SyntroCVCamConsole(bool daemonMode, QObject *parent)
     : QThread(parent)
@@ -67,7 +70,7 @@ void SyntroCVCamConsole::aboutToQuit()
 	}
 
 	if (m_frameRefreshTimer) {
-		killTimer(m_frameRefreshTimer;
+		killTimer(m_frameRefreshTimer);
 		m_frameRefreshTimer = 0;
 	}
 
@@ -102,7 +105,7 @@ void SyntroCVCamConsole::timerEvent(QTimerEvent *event)
 
         m_frameCount++;
 
-        emit newImage(frame);
+        emit newFrame(frame);
     }
 }
 
@@ -175,7 +178,7 @@ void SyntroCVCamConsole::runConsole()
 
 void SyntroCVCamConsole::runDaemon()
 {
-	while (!SyntroLCamConsole::sigIntReceived)
+	while (!SyntroCVCamConsole::sigIntReceived)
 		msleep(100);
 }
 
@@ -184,7 +187,7 @@ void SyntroCVCamConsole::registerSigHandler()
 	struct sigaction sia;
 
 	bzero(&sia, sizeof sia);
-	sia.sa_handler = SyntroLCamConsole::sigHandler;
+	sia.sa_handler = SyntroCVCamConsole::sigHandler;
 
 	if (sigaction(SIGINT, &sia, NULL) < 0)
 		perror("sigaction(SIGINT)");
@@ -192,5 +195,5 @@ void SyntroCVCamConsole::registerSigHandler()
 
 void SyntroCVCamConsole::sigHandler(int)
 {
-	SyntroLCamConsole::sigIntReceived = true;
+	SyntroCVCamConsole::sigIntReceived = true;
 }

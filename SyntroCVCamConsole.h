@@ -17,8 +17,8 @@
 //  along with Syntro.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef CAMERACONSOLE_H
-#define CAMERACONSOLE_H
+#ifndef SYNTROCVCAMCONSOLE_H
+#define SYNTROCVCAMCONSOLE_H
 
 #include "QThread"
 #include "CameraClient.h"
@@ -39,7 +39,7 @@ public slots:
 
 protected:
 	void timerEvent(QTimerEvent *event);
-    void run();
+	void run();
 
 private:
 	void showHelp();
@@ -56,13 +56,14 @@ private:
 	OpenCVCamera *m_camera;
 
 	int m_frameRefreshTimer;
-    int	m_frameRateTimer;
+	int m_frameRateTimer;
 	int m_frameCount;
-    double m_fps;
+	double m_fps;
 
-    QString m_logTag;
+	QString m_logTag;
 
-    bool m_running;
+	bool m_running;
 };
 
-#endif // CAMERACONSOLE_H
+#endif // SYNTROCVCAMCONSOLE_H
+

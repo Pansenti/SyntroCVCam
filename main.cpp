@@ -69,11 +69,11 @@ int runConsoleApp(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
 
-	bool daemonMode = SyntroUtils::checkDaemonModeFlat(argc, argv);
+	bool daemonMode = SyntroUtils::checkDaemonModeFlag(argc, argv);
 
 	SyntroUtils::loadStandardSettings(PRODUCT_TYPE, a.arguments());
 
-	CameraConsole wc(daemonMode, &a);
+	SyntroCVCamConsole wc(daemonMode, &a);
 
 	return a.exec();
 }

@@ -3,7 +3,7 @@
 # Copyright (c) 2013 Pansenti, LLC. All rights reserved.
 #
 
-greatherThan(QT_MAJOR_VERSION, 4): cache()
+greaterThan(QT_MAJOR_VERSION, 4): cache()
 
 TEMPLATE = app
 
@@ -28,7 +28,7 @@ unix {
 	}
 	else {
 		CONFIG += link_pkgconfig
-		PKGCONFIG += syntro
+		PKGCONFIG += syntro opencv
 		target.path = /usr/bin
 	}
 
