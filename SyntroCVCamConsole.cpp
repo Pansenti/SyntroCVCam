@@ -32,7 +32,7 @@ SyntroCVCamConsole::SyntroCVCamConsole(bool daemonMode, QObject *parent)
 {
 	m_daemonMode = daemonMode;
 
-    m_logTag = PRODUCT_TYPE;
+	m_logTag = PRODUCT_TYPE;
 	m_fps = 0;
 	m_frameCount = 0;
 
@@ -47,19 +47,19 @@ SyntroCVCamConsole::SyntroCVCamConsole(bool daemonMode, QObject *parent)
 		}
 	}
 
-    SyntroUtils::syntroAppInit();
+	SyntroUtils::syntroAppInit();
 
-    m_client = new CameraClient(this);
+	m_client = new CameraClient(this);
 	m_client->resumeThread();
 
-	if (!m_daemonMode)
+	if (m_daemonMode)
 		m_frameRateTimer = 0;
 	else
 		m_frameRateTimer = startTimer(STAT_REFRESH_SECS * SYNTRO_CLOCKS_PER_SEC);
 
-    m_frameRefreshTimer = startTimer(SYNTRO_CLOCKS_PER_SEC / FRAME_RATE_DIVISOR);
+	m_frameRefreshTimer = startTimer(SYNTRO_CLOCKS_PER_SEC / FRAME_RATE_DIVISOR);
 
-    start();
+	start();
 }
 
 void SyntroCVCamConsole::aboutToQuit()
@@ -90,23 +90,23 @@ void SyntroCVCamConsole::aboutToQuit()
 
 void SyntroCVCamConsole::timerEvent(QTimerEvent *event)
 {
-    Mat frame;
+	Mat frame;
 
-    if (!m_running)
-        return;
+	if (!m_running)
+		return;
 
-    if (event->timerId() == m_frameRateTimer) {
-        m_fps = (double)m_frameCount / STAT_REFRESH_SECS;
-        m_frameCount = 0;
-    } 
-    else {
-        if (!m_camera->getNextFrame(frame))
-            return;
+	if (event->timerId() == m_frameRateTimer) {
+		m_fps = (double)m_frameCount / STAT_REFRESH_SECS;
+		m_frameCount = 0;
+	} 
+	else {
+		if (!m_camera->getNextFrame(frame))
+			return; 
 
-        m_frameCount++;
+		m_frameCount++;
 
-        emit newFrame(frame);
-    }
+		emit newFrame(frame);
+	}
 }
 
 void SyntroCVCamConsole::showHelp()
@@ -125,7 +125,7 @@ void SyntroCVCamConsole::showStatus()
 
 void SyntroCVCamConsole::run()
 {
-    m_camera = new OpenCVCamera();
+	m_camera = new OpenCVCamera();
 
 	connect(this, SIGNAL(newFrame(Mat)), m_client, SLOT(newFrame(Mat)), Qt::DirectConnection);
 
@@ -147,31 +147,31 @@ void SyntroCVCamConsole::run()
 
 void SyntroCVCamConsole::runConsole()
 {
-    struct termios ctty;
+	struct termios ctty;
 
-    tcgetattr(fileno(stdout), &ctty);
-    ctty.c_lflag &= ~(ICANON);
-    tcsetattr(fileno(stdout), TCSANOW, &ctty);
+	tcgetattr(fileno(stdout), &ctty);
+	ctty.c_lflag &= ~(ICANON);
+	tcsetattr(fileno(stdout), TCSANOW, &ctty);
 
-    while (m_running) {
+	while (m_running) {
 		printf("\nEnter option: ");
 
-        switch (toupper(getchar())) {
-			case 'H':
-				showHelp();
-				break;
+		switch (toupper(getchar())) {
+		case 'H':
+			showHelp();
+			break;
 
-			case 'S':
-				showStatus();
-				break;
+		case 'S':
+			showStatus();
+			break;
 
-			case 'X':
-				printf("\nExiting\n");
-                m_running = false;
-				break;
+		case 'X':
+			printf("\nExiting\n");
+			m_running = false;
+			break;
 
-			case '\n':
-				continue;
+		case '\n':
+			continue;
 		}
 	}
 }
