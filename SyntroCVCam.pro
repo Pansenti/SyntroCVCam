@@ -14,7 +14,7 @@ DESTDIR = Output
 QT += core gui network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += release
+CONFIG += debug_and_release
 
 unix {
 	macx {
